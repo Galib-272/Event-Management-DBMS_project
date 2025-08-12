@@ -1,2 +1,2 @@
 "# Event-Management-Database-Project" 
-https://asif-748.github.io/Event-Management-DBMS_Project/
+https://github.com/Galib-272/Event-Management-DBMS_project.git
