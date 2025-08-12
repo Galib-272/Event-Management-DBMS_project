@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up | EveM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8 text-gray-800">
+  <div class="max-w-md mx-auto bg-white shadow p-6 rounded">
+    <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+    <form id="signupForm" class="space-y-4">
+      <input id="first_name" type="text" placeholder="First Name" class="w-full border p-2 rounded" required />
+      <input id="last_name" type="text" placeholder="Last Name" class="w-full border p-2 rounded" required />
+      <input id="email" type="email" placeholder="Email" class="w-full border p-2 rounded" required />
+      <input id="phone" type="text" placeholder="Phone" class="w-full border p-2 rounded" />
+      <input id="password" type="password" placeholder="Password" class="w-full border p-2 rounded" required />
+      <input id="confirm_password" type="password" placeholder="Confirm Password" class="w-full border p-2 rounded" required />
+
+      
+
+      <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded">Sign Up</button>
+    </form>
+    <p id="signupMessage" class="text-center mt-4 text-sm text-red-600"></p>
+  </div>
+
+  
+  <script>
+  document.getElementById("signupForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirm_password").value;
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    const data = {
+      first_name: document.getElementById("first_name").value,
+      last_name: document.getElementById("last_name").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      password: password
+    };
+
+    try {
+      const res = await fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const msg = await res.text();
+      document.getElementById("signupMessage").textContent = msg;
+
+      if (res.ok) {
+        alert("Signup successful! Please login.");
+        window.location.href = "login-user.html";
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      alert("An error occurred. Please try again.");
+    }
+  });
+</script>
+
+
+</body>
+</html>

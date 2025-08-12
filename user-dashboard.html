@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>User Dashboard | EveM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for card hover effect */
+        .dashboard-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard-card-disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- ✅ Navigation Bar -->
+    <header class="bg-white shadow sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+
+            <!-- Logo + Title -->
+            <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-indigo-600">
+                <img src="assets/icon.png" alt="EveM Logo" class="h-8 w-8">
+                <span>EveM</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
+                <a href="index.html" class="hover:text-indigo-600">Home</a>
+                <a href="create-event.html" class="hover:text-indigo-600">Event</a>
+                <a href="about.html" class="hover:text-indigo-600">About</a>
+            </nav>
+            <script>
+                window.addEventListener("DOMContentLoaded", () => {
+                    const loginContainer = document.querySelector("#loginButton");
+                    const admin = JSON.parse(localStorage.getItem("admin"));
+                    const user = JSON.parse(localStorage.getItem("user"));
+
+                    if (admin && loginContainer) {
+                        loginContainer.innerHTML = `
+        <div class="relative">
+          <button onclick="toggleDropdown()" class="bg-red-600 text-white px-4 py-2 rounded-full flex items-center space-x-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+            </svg>
+            <span>${admin.username}</span>
+          </button>
+          <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+            <a href="admin-dashboard.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Dashboard</a>
+            <a href="#" onclick="logoutAdmin()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>
+      `;
+                    } else if (user && loginContainer) {
+                        loginContainer.innerHTML = `
+        <div class="relative">
+          <button onclick="toggleDropdown()" class="bg-indigo-600 text-white px-4 py-2 rounded-full flex items-center space-x-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+            </svg>
+            <span>${user.first_name}</span>
+          </button>
+          <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+            <a href="user-dashboard.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Dashboard</a>
+            <a href="#" onclick="logoutUser()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>
+      `;
+                    }
+                });
+
+                function logoutAdmin() {
+                    localStorage.removeItem("admin");
+                    location.href = "index.html";
+                }
+
+                function logoutUser() {
+                    localStorage.removeItem("user");
+                    location.href = "index.html";
+                }
+
+                function toggleDropdown() {
+                    const menu = document.getElementById("dropdownMenu");
+                    if (menu) menu.classList.toggle("hidden");
+                }
+
+                // Close on outside click
+                document.addEventListener("click", function (e) {
+                    const dropdown = document.getElementById("dropdownMenu");
+                    const button = e.target.closest("button");
+                    if (dropdown && !dropdown.contains(e.target) && !button) {
+                        dropdown.classList.add("hidden");
+                    }
+                });
+            </script>
+            <!-- Search Box -->
+            <div class="relative hidden md:flex">
+                <input type="text" placeholder="Search "
+                    class="border-2 border-indigo-500 rounded-full pl-10 pr-4 py-2 text-gray-700 w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                <svg class="absolute left-3 top-3 text-gray-500 w-4 h-4" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+                </svg>
+            </div>
+
+            <!-- Login/Signup Dropdown -->
+            <div class="relative" id="loginButton">
+                <button onclick="toggleDropdown()"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+                    </svg>
+                    <span>Log In / Sign Up</span>
+                </button>
+                <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+                    <a href="login-user.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User
+                        Login</a>
+                    <a href="login-admin.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin
+                        Login</a>
+                    <a href="signup.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Up</a>
+                </div>
+            </div>
+        </div>
+
+
+    </header>
+    <header class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold">User Dashboard</h1>
+        <a href="index.html" class="text-sm bg-white text-blue-600 px-3 py-1 rounded">View Site</a>
+    </header>
+
+
+    <main class="flex-grow container mx-auto px-6 py-8">
+        <section id="welcomeSection" class="text-center py-6">
+            <h2 class="text-3xl font-extrabold text-indigo-800">Welcome, <span id="userFirstName"></span>!</h2>
+            <p class="text-gray-600 mt-2 text-md">What would you like to do today?</p>
+        </section>
+
+        <div id="dashboardCards" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6 max-w-6xl mx-auto">
+            <div onclick="loadEventForm()"
+                class="dashboard-card cursor-pointer bg-white p-8 rounded-2xl shadow-lg text-center flex flex-col items-center justify-center border-b-4 border-indigo-500">
+                <svg class="w-16 h-16 text-indigo-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <h3 class="text-2xl font-bold text-indigo-700 mb-2">Create Event</h3>
+                <p class="text-gray-500 text-sm">Start organizing your event from scratch.</p>
+            </div>
+
+            <div onclick="loadUpdateEventSelector()"
+                class="dashboard-card cursor-pointer bg-white p-8 rounded-2xl shadow-lg text-center flex flex-col items-center justify-center border-b-4 border-indigo-500">
+                <svg class="w-16 h-16 text-indigo-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                    </path>
+                </svg>
+                <h3 class="text-2xl font-bold text-indigo-700 mb-2">Update Event</h3>
+                <p class="text-gray-500 text-sm">Modify details of an existing event.</p>
+            </div>
+
+            <div onclick="loadPaymentEventSelector()"
+                class="dashboard-card cursor-pointer bg-white p-8 rounded-2xl shadow-lg text-center flex flex-col items-center justify-center border-b-4 border-yellow-500">
+                <svg class="w-16 h-16 text-yellow-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8c-2.485 0-4 1.5-4 3.5 0 2.477 2.5 4.5 5 4.5s5-2.023 5-4.5c0-2-1.515-3.5-4-3.5z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 19l4.243 4.243a1 1 0 001.414 0l.707-.707a1 1 0 000-1.414L12 17.586m0 1.414l-4.243 4.243a1 1 0 01-1.414 0l-.707-.707a1 1 0 010-1.414L12 17.586">
+                    </path>
+                </svg>
+                <h3 class="text-2xl font-bold text-yellow-600 mb-2">Make Payment</h3>
+                <p class="text-gray-500 text-sm">Pay for services related to your events.</p>
+            </div>
+
+            <!-- New: Give Feedback Card -->
+            <div onclick="loadFeedbackForm()"
+                class="dashboard-card cursor-pointer bg-white p-8 rounded-2xl shadow-lg text-center flex flex-col items-center justify-center border-b-4 border-purple-500">
+                <svg class="w-16 h-16 text-purple-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 8h10M7 12h10M7 16h10M12 4v16m-7-7h14"></path>
+                </svg>
+                <h3 class="text-2xl font-bold text-purple-700 mb-2">Give Feedback</h3>
+                <p class="text-gray-500 text-sm">Share your thoughts on an event.</p>
+            </div>
+
+            <!-- New: View Receipts Card -->
+            <div onclick="loadReceiptsList()"
+                class="dashboard-card cursor-pointer bg-white p-8 rounded-2xl shadow-lg text-center flex flex-col items-center justify-center border-b-4 border-green-500">
+                <svg class="w-16 h-16 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
+                </svg>
+                <h3 class="text-2xl font-bold text-green-700 mb-2">View Receipts</h3>
+                <p class="text-gray-500 text-sm">See all your payment receipts.</p>
+            </div>
+
+        </div>
+
+        <div id="eventFormContainer" class="max-w-3xl mx-auto px-4 mt-10 hidden"></div>
+        <div id="updateEventContainer" class="max-w-3xl mx-auto px-4 mt-10 hidden"></div>
+        <div id="paymentEventSelectorContainer" class="max-w-3xl mx-auto px-4 mt-10 hidden"></div>
+        <div id="paymentFormContainer" class="max-w-md mx-auto px-4 mt-10 hidden"></div>
+        <div id="receiptContainer" class="max-w-md mx-auto px-4 mt-10 hidden"></div>
+        <!-- New: Feedback Form Container -->
+        <div id="feedbackContainer" class="max-w-3xl mx-auto px-4 mt-10 hidden"></div>
+        <!-- New: Receipts List Container -->
+        <div id="receiptsListContainer" class="max-w-3xl mx-auto px-4 mt-10 hidden"></div>
+    </main>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user) window.location.href = "login-user.html";
+
+            document.getElementById("userFirstName").textContent = user.first_name;
+
+            // Login Button Setup
+            const loginContainer = document.getElementById("loginButton");
+            loginContainer.innerHTML = `<div class="relative">
+          <button onclick="toggleDropdown()" class="bg-indigo-600 text-white px-4 py-2 rounded-full flex items-center space-x-2 hover:bg-indigo-700 transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+            </svg>
+            <span>${user.first_name}</span>
+          </button>
+          <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+            <a href="#" onclick="logoutUser()" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>`;
+        });
+
+        function logoutUser() {
+            localStorage.removeItem("user");
+            window.location.href = "index.html";
+        }
+
+        function toggleDropdown() {
+            const menu = document.getElementById("dropdownMenu");
+            if (menu) menu.classList.toggle("hidden");
+        }
+
+        function goBackToDashboard() {
+            document.getElementById("welcomeSection").classList.remove("hidden");
+            document.getElementById("dashboardCards").classList.remove("hidden");
+            document.getElementById("eventFormContainer").classList.add("hidden");
+            document.getElementById("paymentFormContainer").classList.add("hidden");
+            document.getElementById("updateEventContainer").classList.add("hidden");
+            document.getElementById("paymentEventSelectorContainer").classList.add("hidden");
+            document.getElementById("receiptContainer").classList.add("hidden");
+            document.getElementById("feedbackContainer").classList.add("hidden"); // New
+            document.getElementById("receiptsListContainer").classList.add("hidden"); // New
+        }
+
+        // Helper function to populate dropdowns
+        async function populateDropdown(selectId, apiUrl, primaryField, secondaryField = null, tertiaryField = null) {
+            const selectElement = document.getElementById(selectId);
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const items = await response.json();
+
+                // Clear existing options, keeping the default "Select..." option
+                selectElement.innerHTML = '<option value="">Select ' + selectId.replace('Id', '') + '</option>';
+
+                items.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    let text = item[primaryField];
+                    if (secondaryField && item[secondaryField]) {
+                        text += ` ${item[secondaryField]}`;
+                    }
+                    if (tertiaryField && item[tertiaryField]) {
+                        text += ` (${item[tertiaryField]})`;
+                    }
+                    option.textContent = text;
+                    selectElement.appendChild(option);
+                });
+            } catch (error) {
+                console.error(`Error populating ${selectId}:`, error);
+
+            }
+        }
+
+
+        function loadEventForm() {
+            document.getElementById("welcomeSection").classList.add("hidden");
+            document.getElementById("dashboardCards").classList.add("hidden");
+            const container = document.getElementById("eventFormContainer");
+            container.classList.remove("hidden");
+            container.innerHTML = `
+        <button onclick="goBackToDashboard()" class="mb-6 flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          <span>Back to Dashboard</span>
+        </button>
+        <form id="eventForm" class="bg-white p-8 rounded-xl shadow-lg space-y-6 border border-gray-200">
+          <h2 class="text-3xl font-bold text-indigo-700 mb-4 text-center">Create New Event</h2>
+          <input type="hidden" name="userId" value="${JSON.parse(localStorage.getItem("user")).id}" />
+          <input type="text" name="name" required placeholder="Event Name"
+            class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <textarea name="description" required placeholder="Event Description"
+            class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label for="startDate" class="block mb-1 text-sm font-medium text-gray-700">Start Date</label>
+              <input type="date" id="startDate" name="startDate" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+            <div>
+              <label for="startTime" class="block mb-1 text-sm font-medium text-gray-700">Start Time</label>
+              <input type="time" id="startTime" name="startTime" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label for="endDate" class="block mb-1 text-sm font-medium text-gray-700">End Date</label>
+              <input type="date" id="endDate" name="endDate" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+            <div>
+              <label for="endTime" class="block mb-1 text-sm font-medium text-gray-700">End Time</label>
+              <input type="time" id="endTime" name="endTime" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+          </div>
+
+          <select id="categoryId" name="categoryId" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="">Select Category</option>
+          </select>
+
+          <select id="organizerId" name="organizerId" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="">Select Organizer</option>
+          </select>
+
+          <select id="vendorId" name="vendorId" class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="">Select Vendor</option>
+          </select>
+
+          <select id="venueId" name="venueId" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="">Select Venue</option>
+          </select>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <input type="number" name="maxAttendees" placeholder="Max Attendees"
+              class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="number" name="ticketPrice" placeholder="Ticket Price"
+              class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <input type="number" id="budget" name="budget" placeholder="Estimated Budget"
+              class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="text" id="budgetEst" placeholder="Live Estimate"
+              class="w-full border px-4 py-3 bg-gray-100 text-gray-500 rounded-lg" readonly />
+          </div>
+
+          <div>
+            <label class="block mb-2 text-sm text-gray-600 font-medium">Visibility</label>
+            <div class="flex items-center space-x-4">
+              <label class="flex items-center"><input type="radio" name="visibility" value="public" checked class="form-radio text-indigo-600" /> <span class="ml-2">Public</span></label>
+              <label class="flex items-center"><input type="radio" name="visibility" value="private" class="form-radio text-indigo-600" /> <span class="ml-2">Private</span></label>
+            </div>
+          </div>
+
+          <button type="submit"
+            class="bg-indigo-600 text-white w-full px-6 py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">
+            Submit Event
+          </button>
+        </form>
+      `;
+
+            const budgetInput = document.getElementById("budget");
+            const budgetEst = document.getElementById("budgetEst");
+
+            budgetInput.addEventListener("input", () => {
+                const val = parseFloat(budgetInput.value) || 0;
+                budgetEst.value = "$" + (val * 1.15).toFixed(2) + " (incl. 15% buffer)";
+            });
+
+            // Fetch and populate dropdowns
+            populateDropdown('categoryId', 'http://localhost:3000/categories', 'name');
+            populateDropdown('organizerId', 'http://localhost:3000/organizers', 'first_name', 'last_name', 'company');
+            populateDropdown('vendorId', 'http://localhost:3000/vendors', 'first_name', 'last_name', 'service');
+            populateDropdown('venueId', 'http://localhost:3000/venues', 'name', 'location');
+            document.getElementById("eventForm").addEventListener("submit", async function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    const res = await fetch("http://localhost:3000/events", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data),
+                    });
+
+                    if (res.ok) {
+                        alert("Event created successfully!");
+                        window.location.href = "user-dashboard.html";
+                    } else {
+                        const err = await res.json();
+                        alert("Failed to create event: " + err.message);
+                    }
+                } catch (err) {
+                    alert("Error submitting event.");
+                    console.error(err);
+                }
+            });
+        }
+
+        // New function to load a selector for events to update
+        async function loadUpdateEventSelector() {
+            document.getElementById("welcomeSection").classList.add("hidden");
+            document.getElementById("dashboardCards").classList.add("hidden");
+            const container = document.getElementById("updateEventContainer");
+            container.classList.remove("hidden");
+            container.innerHTML = `
+                <button onclick="goBackToDashboard()" class="mb-6 flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    <span>Back to Dashboard</span>
+                </button>
+                <h2 class="text-3xl font-bold text-indigo-700 mb-6 text-center">Select an Event to Update</h2>
+                <div id="eventList" class="space-y-4"></div>
+            `;
+
+            const user = JSON.parse(localStorage.getItem("user"));
+            const eventList = document.getElementById("eventList");
+            try {
+                const response = await fetch(`http://localhost:3000/events/user/${user.id}`);
+                if (!response.ok) throw new Error("Failed to fetch events.");
+                const events = await response.json();
+
+                if (events.length === 0) {
+                    eventList.innerHTML = `<p class="text-center text-gray-500">You have no events to update. Create one first!</p>`;
+                } else {
+                    events.forEach(event => {
+                        const eventCard = document.createElement('div');
+                        eventCard.className = 'bg-white p-6 rounded-lg shadow cursor-pointer hover:bg-gray-50 transition-colors';
+                        eventCard.innerHTML = `
+                            <h4 class="text-xl font-semibold text-gray-800">${event.name}</h4>
+                            <p class="text-gray-500 text-sm">Starts: ${new Date(event.start_date).toLocaleDateString()} at ${event.start_time}</p>
+                        `;
+                        eventCard.onclick = () => loadUpdateForm(event.id);
+                        eventList.appendChild(eventCard);
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching events:", error);
+                eventList.innerHTML = `<p class="text-center text-red-500">Error loading events. Please try again.</p>`;
+            }
+        }
+
+        async function loadUpdateForm(eventId) {
+            const container = document.getElementById("updateEventContainer");
+            container.innerHTML = `
+                <button onclick="loadUpdateEventSelector()" class="mb-6 flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    <span>Back to Event List</span>
+                </button>
+                <form id="updateEventForm" class="bg-white p-8 rounded-xl shadow-lg space-y-6 border border-gray-200"></form>
+            `;
+
+            const form = document.getElementById("updateEventForm");
+            try {
+                // Fetch event details
+                const eventResponse = await fetch(`http://localhost:3000/events/${eventId}`);
+                if (!eventResponse.ok) throw new Error("Failed to fetch event details.");
+                const event = await eventResponse.json();
+
+                form.innerHTML = `
+                    <h2 class="text-3xl font-bold text-indigo-700 mb-4 text-center">Update Event: ${event.name}</h2>
+                    <input type="hidden" name="id" value="${event.id}" />
+                    <input type="hidden" name="userId" value="${event.user_id}" />
+                    <input type="text" name="name" required placeholder="Event Name" value="${event.name}"
+                        class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                    <textarea name="description" required placeholder="Event Description"
+                        class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">${event.description}</textarea>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="startDate" class="block mb-1 text-sm font-medium text-gray-700">Start Date</label>
+                            <input type="date" id="startDate" name="startDate" required value="${event.start_date.split('T')[0]}" class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div>
+                            <label for="startTime" class="block mb-1 text-sm font-medium text-gray-700">Start Time</label>
+                            <input type="time" id="startTime" name="startTime" required value="${event.start_time}" class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="endDate" class="block mb-1 text-sm font-medium text-gray-700">End Date</label>
+                            <input type="date" id="endDate" name="endDate" required value="${event.end_date.split('T')[0]}" class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div>
+                            <label for="endTime" class="block mb-1 text-sm font-medium text-gray-700">End Time</label>
+                            <input type="time" id="endTime" name="endTime" required value="${event.end_time}" class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                    </div>
+                    
+                    <select id="categoryId" name="categoryId" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+                    <select id="organizerId" name="organizerId" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+                    <select id="vendorId" name="vendorId" class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+                    <select id="venueId" name="venueId" required class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <input type="number" name="maxAttendees" placeholder="Max Attendees" value="${event.max_attendees}"
+                        class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="number" name="ticketPrice" placeholder="Ticket Price" value="${event.ticket_price}"
+                        class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <input type="number" id="budget" name="budget" placeholder="Estimated Budget" value="${event.budget}"
+                        class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="text" id="budgetEst" placeholder="Live Estimate"
+                        class="w-full border px-4 py-3 bg-gray-100 text-gray-500 rounded-lg" readonly />
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-sm text-gray-600 font-medium">Visibility</label>
+                        <div class="flex items-center space-x-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="visibility" value="public" ${event.visibility === 'public' ? 'checked' : ''} class="form-radio text-indigo-600" />
+                                <span class="ml-2">Public</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="visibility" value="private" ${event.visibility === 'private' ? 'checked' : ''} class="form-radio text-indigo-600" />
+                                <span class="ml-2">Private</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                        class="bg-indigo-600 text-white w-full px-6 py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">
+                        Update Event
+                    </button>
+                `;
+
+                // Repopulate all dropdowns and set the selected values
+                await populateDropdown('categoryId', 'http://localhost:3000/categories', 'name');
+                document.getElementById('categoryId').value = event.category_id;
+
+                await populateDropdown('organizerId', 'http://localhost:3000/organizers', 'first_name', 'last_name', 'company');
+                document.getElementById('organizerId').value = event.organizer_id;
+
+                await populateDropdown('vendorId', 'http://localhost:3000/vendors', 'first_name', 'last_name', 'service');
+                document.getElementById('vendorId').value = event.vendor_id;
+
+                await populateDropdown('venueId', 'http://localhost:3000/venues', 'name', 'location');
+                document.getElementById('venueId').value = event.venue_id;
+
+                // Add event listener for form submission
+                form.addEventListener("submit", async function (e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const data = Object.fromEntries(formData.entries());
+
+                    try {
+                        const res = await fetch(`http://localhost:3000/events/${eventId}`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data),
+                        });
+
+                        if (res.ok) {
+                            alert("Event updated successfully!");
+                            window.location.href = "user-dashboard.html";
+                        } else {
+                            const err = await res.json();
+                            alert("Failed to update event: " + err.message);
+                        }
+                    } catch (err) {
+                        alert("Error updating event.");
+                        console.error(err);
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error loading update form:", error);
+                container.innerHTML = `<p class="text-center text-red-500">Error loading event details. Please try again.</p>`;
+            }
+        }
+
+        // New function to load a selector for events to make a payment for
+        async function loadPaymentEventSelector() {
+            // Corrected logic: Hide all other containers before showing this one
+            document.getElementById("welcomeSection").classList.add("hidden");
+            document.getElementById("dashboardCards").classList.add("hidden");
+            document.getElementById("eventFormContainer").classList.add("hidden");
+            document.getElementById("updateEventContainer").classList.add("hidden");
+            document.getElementById("paymentFormContainer").classList.add("hidden");
+            document.getElementById("receiptContainer").classList.add("hidden");
+            document.getElementById("feedbackContainer").classList.add("hidden"); // New
+            document.getElementById("receiptsListContainer").classList.add("hidden"); // New
+
+            const container = document.getElementById("paymentEventSelectorContainer");
+            container.classList.remove("hidden");
+            container.innerHTML = `
+                <button onclick="goBackToDashboard()" class="mb-6 flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    <span>Back to Dashboard</span>
+                </button>
+                <h2 class="text-3xl font-bold text-yellow-600 mb-6 text-center">Select an Event to Make a Payment For</h2>
+                <div id="eventList" class="space-y-4">
+                    <p class="text-center text-gray-500">Loading events...</p>
+                </div>
+            `;
+
+            const user = JSON.parse(localStorage.getItem("user"));
+            const eventList = document.getElementById("eventList");
+
+            if (!user || !user.id) {
+                eventList.innerHTML = `<p class="text-center text-red-500">Error: User not logged in.</p>`;
+                return;
+            }
+
+            try {
+                // Fetch events from the backend, which now includes the 'is_paid' status
+                const response = await fetch(`http://localhost:3000/events/user/${user.id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const events = await response.json();
+                console.log("Fetched events:", events); // Debugging log
+
+                // Filter the events to only show the ones that have not been paid
+                const unpaidEvents = events.filter(event => !event.is_paid);
+                console.log("Unpaid events:", unpaidEvents); // Debugging log
+
+                if (unpaidEvents.length === 0) {
+                    eventList.innerHTML = `<p class="text-center text-gray-500">You have no pending payments. All events are paid.</p>`;
+                } else {
+                    // Clear the loading message before adding new content
+                    eventList.innerHTML = '';
+                    unpaidEvents.forEach(event => {
+                        const eventCard = document.createElement('div');
+                        eventCard.className = 'bg-white p-6 rounded-lg shadow flex justify-between items-center';
+                        eventCard.innerHTML = `
+                            <div>
+                                <h4 class="text-xl font-semibold text-gray-800">${event.name}</h4>
+                                <p class="text-gray-500 text-sm">Starts: ${new Date(event.start_date).toLocaleDateString()} at ${event.start_time}</p>
+                            </div>
+                            <button onclick="showPaymentForm(${event.id})"
+                                class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition font-semibold">
+                                Pay Now
+                            </button>
+                        `;
+                        eventList.appendChild(eventCard);
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching events:", error);
+                eventList.innerHTML = `<p class="text-center text-red-500">Error loading events. Please ensure your backend server is running and try again.</p>`;
+            }
+        }
+
+        // New function to show the actual payment form after selecting an event
+        function showPaymentForm(eventId) {
+            //the previous container is hidden
+            document.getElementById("paymentEventSelectorContainer").classList.add("hidden");
+            const container = document.getElementById("paymentFormContainer");
+            container.classList.remove("hidden");
+
+            container.innerHTML = `
+                <button onclick="loadPaymentEventSelector()" class="mb-6 flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    <span>Back to Events</span>
+                </button>
+                <div class="bg-white shadow-lg p-8 rounded-xl border border-gray-200">
+                    <h2 class="text-3xl font-bold text-yellow-600 text-center mb-6">Payment for Event</h2>
+                    
+                    <form id="paymentForm" class="space-y-6">
+                        <input type="hidden" id="event_id" name="event_id" value="${eventId}" />
+
+                        <div>
+                            <label class="block mb-2 text-sm font-semibold text-gray-700">Payment Method</label>
+                            <select name="method" class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" required>
+                                <option value="">-- Select Method --</option>
+                                <option value="card">Card</option>
+                                <option value="cash">Cash</option>
+                                <option value="upi">UPI</option>
+                                <option value="paypal">PayPal</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 text-sm font-semibold text-gray-700">Account Info</label>
+                            <input type="text" name="account_info" placeholder="e.g. John Doe, john@upi, ****1234"
+                                class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" required />
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 text-sm font-semibold text-gray-700">Amount</label>
+                            <input type="number" name="amount" step="0.01" placeholder="Amount (e.g., 250.00)" required
+                                class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" />
+                        </div>
+
+                        <button type="submit"
+                            class="bg-yellow-500 text-white w-full py-3 px-4 rounded-lg hover:bg-yellow-600 transition font-semibold">
+                            Pay Now
+                        </button>
+                    </form>
+                    <p id="paymentMessage" class="text-center mt-4 text-sm text-red-600"></p>
+                </div>
+            `;
+
+            // New code to handle payment form submission
+            document.getElementById("paymentForm").addEventListener("submit", async function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
+                const paymentMessage = document.getElementById("paymentMessage");
+
+                try {
+                    const res = await fetch("http://localhost:3000/payments", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data),
+                    });
+
+                    if (res.ok) {
+                        const result = await res.json();
+                        alert("Payment successful!");
+                        // After success, display receipt and remove form
+                        document.getElementById("paymentFormContainer").classList.add("hidden");
+                        showReceipt(result.paymentId);
+                    } else {
+                        const err = await res.json();
+                        paymentMessage.textContent = "Payment failed: " + err.message;
+                        paymentMessage.className = "text-center mt-4 text-sm text-red-600";
+                    }
+                } catch (err) {
+                    paymentMessage.textContent = "Error processing payment.";
+                    paymentMessage.className = "text-center mt-4 text-sm text-red-600";
+                    console.error(err);
+                }
+            });
+        }
+
+        // New function to display a payment receipt
+        async function showReceipt(paymentId) {
+            document.getElementById("welcomeSection").classList.add("hidden");
+            document.getElementById("dashboardCards").classList.add("hidden");
+            document.getElementById("eventFormContainer").classList.add("hidden");
+            document.getElementById("updateEventContainer").classList.add("hidden");
+            document.getElementById("paymentFormContainer").classList.add("hidden");
+            document.getElementById("paymentEventSelectorContainer").classList.add("hidden");
+            document.getElementById("feedbackContainer").classList.add("hidden"); // New
+            document.getElementById("receiptsListContainer").classList.add("hidden"); // New
+
+            const container = document.getElementById("receiptContainer");
+            container.classList.remove("hidden");
+            container.innerHTML = `
+                <button onclick="loadReceiptsList()" class="mb-6 flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    <span>Back to Receipts List</span>
+                </button>
+                <div id="receiptContent" class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 text-center">
+                    <p class="text-gray-500">Loading receipt details...</p>
+                </div>
+            `;
+
+            try {
+                // Fetch payment details from the backend
+                const response = await fetch(`http://localhost:3000/payments/${paymentId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch payment details.');
+                }
+                const paymentDetails = await response.json();
+
+                // Construct and display the receipt
+                const receiptContent = document.getElementById("receiptContent");
+                receiptContent.innerHTML = `
+                    <h2 class="text-3xl font-bold text-green-600 mb-4">Payment Successful!</h2>
+                    <p class="text-gray-700 mb-2">Thank you for your payment.</p>
+                    <div class="border-t border-b border-gray-200 py-4 my-4 text-left">
+                        <p class="text-lg font-semibold text-gray-800">Event: <span class="font-normal">${paymentDetails.event_name}</span></p>
+                        <p class="text-lg font-semibold text-gray-800">Amount Paid: <span class="font-normal">$${parseFloat(paymentDetails.amount).toFixed(2)}</span></p>
+                        <p class="text-lg font-semibold text-gray-800">Method: <span class="font-normal">${paymentDetails.method.toUpperCase()}</span></p>
+                        <p class="text-lg font-semibold text-gray-800">Date: <span class="font-normal">${new Date(paymentDetails.transaction_date).toLocaleString()}</span></p>
+                    </div>
+                    <p class="text-sm text-gray-400">Transaction ID: ${paymentId}</p>
+                `;
+            } catch (error) {
+                console.error("Error displaying receipt:", error);
+                const receiptDetails = document.getElementById("receiptContent");
+                receiptDetails.innerHTML = `<p class="text-center text-red-600">Failed to load receipt details.</p>`;
+            }
+        }
+
+        // New function to load the feedback form
+        async function loadFeedbackForm() {
+            document.getElementById("welcomeSection").classList.add("hidden");
+            document.getElementById("dashboardCards").classList.add("hidden");
+            document.getElementById("eventFormContainer").classList.add("hidden");
+            document.getElementById("updateEventContainer").classList.add("hidden");
+            document.getElementById("paymentFormContainer").classList.add("hidden");
+            document.getElementById("paymentEventSelectorContainer").classList.add("hidden");
+            document.getElementById("receiptContainer").classList.add("hidden");
+            document.getElementById("receiptsListContainer").classList.add("hidden");
+
+            const container = document.getElementById("feedbackContainer");
+            container.classList.remove("hidden");
+            container.innerHTML = `
+        <button onclick="goBackToDashboard()" class="mb-6 flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <span>Back to Dashboard</span>
+        </button>
+        <div class="bg-white shadow-lg p-8 rounded-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-purple-600 text-center mb-6">Give Feedback</h2>
+            
+            <form id="feedbackForm" class="space-y-6">
+                <input type="hidden" id="feedbackUserId" value="${JSON.parse(localStorage.getItem("user")).id}" />
+
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-gray-700">Select Event</label>
+                    <select id="feedbackEventId" name="eventId" class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="">-- Select an Event (optional) --</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-gray-700">Rating (1-5)</label>
+                    <input type="number" id="feedbackRating" name="rating" min="1" max="5" placeholder="e.g., 5"
+                        class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required />
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-gray-700">Comments</label>
+                    <textarea id="feedbackComment" name="comment" rows="4" placeholder="Your feedback here..."
+                        class="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                </div>
+
+                <button type="submit"
+                    class="bg-purple-500 text-white w-full py-3 px-4 rounded-lg hover:bg-purple-600 transition font-semibold">
+                    Submit Feedback
+                </button>
+            </form>
+            <p id="feedbackMessage" class="text-center mt-4 text-sm text-red-600"></p>
+        </div>
+    `;
+
+            // Load events (optional dropdown)
+            populateDropdown('feedbackEventId', `http://localhost:3000/events/user/${JSON.parse(localStorage.getItem("user")).id}`, 'name');
+
+            document.getElementById('feedbackForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const userId = document.getElementById('feedbackUserId').value;
+                const eventId = document.getElementById('feedbackEventId').value || null; // allow null
+                const rating = document.getElementById('feedbackRating').value;
+                const comment = document.getElementById('feedbackComment').value;
+                const feedbackMessage = document.getElementById('feedbackMessage');
+
+                try {
+                    const res = await fetch('http://localhost:3000/feedback', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            event_id: eventId, // now nullable
+                            rating: rating,
+                            comment: comment
+                        })
+                    });
+
+                    if (res.ok) {
+                        feedbackMessage.textContent = "Feedback submitted successfully!";
+                        feedbackMessage.className = "text-center mt-4 text-sm text-green-600";
+                        alert("Feedback submitted successfully!");
+                        document.getElementById('feedbackForm').reset();
+                        goBackToDashboard();
+                    } else {
+                        const err = await res.json();
+                        feedbackMessage.textContent = "Failed to submit feedback: " + err.message;
+                        feedbackMessage.className = "text-center mt-4 text-sm text-red-600";
+                    }
+                } catch (err) {
+                    feedbackMessage.textContent = "Error submitting feedback.";
+                    feedbackMessage.className = "text-center mt-4 text-sm text-red-600";
+                    console.error(err);
+                }
+            });
+        }
+        // New function to load the list of receipts
+        async function loadReceiptsList() {
+            document.getElementById("welcomeSection").classList.add("hidden");
+            document.getElementById("dashboardCards").classList.add("hidden");
+            document.getElementById("eventFormContainer").classList.add("hidden");
+            document.getElementById("updateEventContainer").classList.add("hidden");
+            document.getElementById("paymentFormContainer").classList.add("hidden");
+            document.getElementById("paymentEventSelectorContainer").classList.add("hidden");
+            document.getElementById("receiptContainer").classList.add("hidden");
+            document.getElementById("feedbackContainer").classList.add("hidden");
+
+            const container = document.getElementById("receiptsListContainer");
+            container.classList.remove("hidden");
+            container.innerHTML = `
+                <button onclick="goBackToDashboard()" class="mb-6 flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    <span>Back to Dashboard</span>
+                </button>
+                <div class="bg-white shadow-lg p-8 rounded-xl border border-gray-200">
+                    <h2 class="text-3xl font-bold text-green-600 text-center mb-6">Your Payments</h2>
+                    <div id="receiptsList" class="space-y-4">
+                        <p class="text-center text-gray-500">Loading your receipts...</p>
+                    </div>
+                </div>
+            `;
+
+            const user = JSON.parse(localStorage.getItem("user"));
+            const receiptsListDiv = document.getElementById("receiptsList");
+
+            if (!user || !user.id) {
+                receiptsListDiv.innerHTML = `<p class="text-center text-red-500">Error: User not logged in.</p>`;
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/payments/user/${user.id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const payments = await response.json();
+
+                if (payments.length === 0) {
+                    receiptsListDiv.innerHTML = `<p class="text-center text-gray-500">You have no payment receipts yet.</p>`;
+                } else {
+                    receiptsListDiv.innerHTML = ''; // Clear loading message
+                    payments.forEach(payment => {
+                        const paymentCard = document.createElement('div');
+                        paymentCard.className = 'bg-gray-50 p-4 rounded-lg shadow-sm flex justify-between items-center';
+                        paymentCard.innerHTML = `
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800">${payment.event_name}</h4>
+                                <p class="text-sm text-gray-600">Amount: $${parseFloat(payment.amount).toFixed(2)}</p>
+                                <p class="text-xs text-gray-500">Date: ${new Date(payment.transaction_date).toLocaleDateString()}</p>
+                            </div>
+                            <button onclick="showReceipt(${payment.id})"
+                                class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition font-semibold text-sm">
+                                View Receipt
+                            </button>
+                        `;
+                        receiptsListDiv.appendChild(paymentCard);
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching receipts:", error);
+                receiptsListDiv.innerHTML = `<p class="text-center text-red-500">Error loading receipts. Please ensure your backend server is running and try again.</p>`;
+            }
+        }
+    </script>
+    <!-- Footer -->
+    <footer class="bg-blue-500 text-white p-10">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+                <h4 class="font-bold mb-2">Use EveM</h4>
+                <ul class="space-y-1">
+                    <li><a href="/createevent" class="hover:underline">Create Events</a></li>
+                    <li><a href="#" class="hover:underline">Pricing</a></li>
+                    <li><a href="#" class="hover:underline">Event Marketing</a></li>
+                    <li><a href="#" class="hover:underline">Mobile Ticket App</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-2">Plan Events</h4>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Sell Tickets Online</a></li>
+                    <li><a href="#" class="hover:underline">Event Planning</a></li>
+                    <li><a href="#" class="hover:underline">Virtual Events</a></li>
+                    <li><a href="#" class="hover:underline">QR Codes for Check-In</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-2">Find Events</h4>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">New York Events</a></li>
+                    <li><a href="#" class="hover:underline">Chicago Events</a></li>
+                    <li><a href="#" class="hover:underline">Los Angeles Events</a></li>
+                    <li><a href="#" class="hover:underline">Washington Events</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-2">Connect With Us</h4>
+                <ul class="flex space-x-4">
+                    <li>
+                        <a href="https://x.com/AsifJahan16?t=395gkNQRy6uxrRdKF3HqVQ&s=09" target="_blank"
+                            rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                class="fill-current">
+                                <path
+                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z">
+                                </path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/aasif.jahan.9/" target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                class="fill-current">
+                                <path
+                                    d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z">
+                                </path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.instagram.com/__aasiif__/" target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                class="fill-current">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z">
+                                </path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/in/asif748?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+                            target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                class="fill-current">
+                                <path d="M16 3h-9v4h9zm0 5h-9v4h9zm0 5h-9v4h9zm0 5h-9v4h9z"></path>
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-8 text-center text-sm">
+            <script>
+                document.write(`© ${new Date().getFullYear()} EveM Events Ltd. All rights reserved.`);
+            </script>
+            <p>Bringing your events to life with seamless management</p>
+        </div>
+    </footer>
+</body>
+</html>

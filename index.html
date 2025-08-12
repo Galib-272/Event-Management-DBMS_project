@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EveM-Bringing your events to life with seamless management</title>
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .slide {
+      transition: opacity 1s ease-in-out;
+    }
+    .nav-btn {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+    .nav-btn:hover {
+      background-color: rgba(0, 0, 0, 0.75);
+    }
+  </style>
+</head>
+
+<!-- Navbar -->
+<header class="bg-white shadow sticky top-0 z-50">
+  <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+
+    <!-- Logo + Title -->
+    <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-indigo-600">
+      <img src="assets/icon.png" alt="EveM Logo" class="h-8 w-8">
+      <span>EveM</span>
+    </a>
+
+    <!-- Navigation Links -->
+    <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
+      <a href="index.html" class="hover:text-indigo-600">Home</a>
+      <a href="create-event.html" class="hover:text-indigo-600">Event</a>
+      <a href="about.html" class="hover:text-indigo-600">About</a>
+    </nav>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const loginContainer = document.querySelector("#loginButton");
+        const admin = JSON.parse(localStorage.getItem("admin"));
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (admin && loginContainer) {
+          loginContainer.innerHTML = `
+        <div class="relative">
+          <button onclick="toggleDropdown()" class="bg-red-600 text-white px-4 py-2 rounded-full flex items-center space-x-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+            </svg>
+            <span>${admin.username}</span>
+          </button>
+          <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+            <a href="admin-dashboard.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Dashboard</a>
+            <a href="#" onclick="logoutAdmin()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>
+      `;
+        } else if (user && loginContainer) {
+          loginContainer.innerHTML = `
+        <div class="relative">
+          <button onclick="toggleDropdown()" class="bg-indigo-600 text-white px-4 py-2 rounded-full flex items-center space-x-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+            </svg>
+            <span>${user.first_name}</span>
+          </button>
+          <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+            <a href="user-dashboard.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Dashboard</a>
+            <a href="#" onclick="logoutUser()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>
+      `;
+        }
+      });
+
+      function logoutAdmin() {
+        localStorage.removeItem("admin");
+        location.href = "index.html";
+      }
+
+      function logoutUser() {
+        localStorage.removeItem("user");
+        location.href = "index.html";
+      }
+
+      function toggleDropdown() {
+        const menu = document.getElementById("dropdownMenu");
+        if (menu) menu.classList.toggle("hidden");
+      }
+
+      // Close on outside click
+      document.addEventListener("click", function (e) {
+        const dropdown = document.getElementById("dropdownMenu");
+        const button = e.target.closest("button");
+        if (dropdown && !dropdown.contains(e.target) && !button) {
+          dropdown.classList.add("hidden");
+        }
+      });
+    </script>
+    <!-- Search Box -->
+    <div class="relative hidden md:flex">
+      <input type="text" placeholder="Search "
+        class="border-2 border-indigo-500 rounded-full pl-10 pr-4 py-2 text-gray-700 w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+      <svg class="absolute left-3 top-3 text-gray-500 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+      </svg>
+    </div>
+
+    <!-- Login/Signup Dropdown -->
+    <div class="relative" id="loginButton">
+      <button onclick="toggleDropdown()"
+        class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 flex items-center space-x-2">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+        </svg>
+        <span>Log In / Sign Up</span>
+      </button>
+      <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+        <a href="login-user.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Login</a>
+        <a href="login-admin.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Login</a>
+        <a href="signup.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown Toggle Script -->
+<script>
+  function toggleDropdown() {
+    const dropdown = document.getElementById("dropdownMenu");
+    dropdown.classList.toggle("hidden");
+  }
+
+  // Optional: Close dropdown when clicking outside
+  document.addEventListener("click", function (e) {
+    const dropdown = document.getElementById("dropdownMenu");
+    const button = e.target.closest("button");
+    if (!dropdown.contains(e.target) && !button) {
+      dropdown.classList.add("hidden");
+    }
+  });
+</script>
+
+<div class="relative w-full mx-auto h-[450px] overflow-hidden bg-pink-200 rounded-xl" id="slider">
+  <!-- Slides will be inserted here by JavaScript -->
+
+  <!-- Navigation arrows - matching your original style -->
+  <div class="absolute inset-0 flex items-center justify-between px-4">
+    <button id="prevBtn" class="nav-btn">❮</button>
+    <button id="nextBtn" class="nav-btn">❯</button>
+  </div>
+
+  <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2" id="dots">
+  </div>
+</div>
+
+<script>
+  // original slide data
+  const slides = [
+    { src: "assets/b (4).jpg", title: "CELEBRATION", subtitle: "PARTIES" },
+    { src: "assets/b (1).jpg", title: "CORPORATE-OFFICE", subtitle: "MEETINGS" },
+    { src: "assets/b (2).jpg", title: "FAMILY", subtitle: "GATHERINGS" },
+    { src: "assets/b (3).jpg", title: "ART & WINE NIGHT", subtitle: "CREATIVE FUN" },
+    { src: "assets/b (5).jpg", title: "DANCE PARTY", subtitle: "FEEL THE BEAT" },
+    { src: "assets/b (6).jpg", title: "COFFEE MEETUP", subtitle: "NEW FRIENDS" }
+  ];
+
+  // original slider logic
+  let currentSlide = 0;
+  let interval;
+  const slider = document.getElementById('slider');
+  const dotsContainer = document.getElementById('dots');
+
+  // Create slides - original structure
+  slides.forEach((slide, index) => {
+    const slideDiv = document.createElement('div');
+    slideDiv.className = `slide absolute inset-0 ${index === 0 ? 'opacity-100' : 'opacity-0'}`;
+    slideDiv.innerHTML = `
+        <img src="${slide.src}" alt="Slide ${index + 1}" class="w-full h-full object-cover rounded-xl" />
+        <!-- Your original title/subtitle positioning and styling -->
+        <div class="absolute top-1/4 left-10 bg-red-600 text-white px-4 py-2 text-lg font-bold rounded-md">${slide.title}</div>
+        <div class="absolute top-1/3 left-10 bg-white text-red-600 px-4 py-2 text-lg font-bold rounded-md">${slide.subtitle}</div>
+      `;
+    slider.insertBefore(slideDiv, slider.firstChild);
+  });
+
+  // Create dots - original style
+  slides.forEach((_, index) => {
+    const dot = document.createElement('button');
+    dot.className = `h-3 w-3 rounded-full transition-all ${index === 0 ? 'bg-white' : 'bg-gray-400'}`;
+    dot.addEventListener('click', () => goToSlide(index));
+    dotsContainer.appendChild(dot);
+  });
+
+  // Navigation functions - original
+  function goToSlide(index) {
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('#dots button');
+
+    slides.forEach(slide => slide.style.opacity = '0');
+    dots.forEach(dot => dot.className = 'h-3 w-3 rounded-full transition-all bg-gray-400');
+
+    slides[index].style.opacity = '100';
+    dots[index].className = 'h-3 w-3 rounded-full transition-all bg-white';
+    currentSlide = index;
+
+    clearInterval(interval);
+    startInterval();
+  }
+
+  function nextSlide() {
+    goToSlide((currentSlide + 1) % slides.length);
+  }
+
+  function prevSlide() {
+    goToSlide((currentSlide - 1 + slides.length) % slides.length);
+  }
+
+  function startInterval() {
+    interval = setInterval(nextSlide, 5000);
+  }
+
+  // Event listeners - original
+  document.getElementById('nextBtn').addEventListener('click', nextSlide);
+  document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+  // Close dropdown if clicked outside - original
+  window.addEventListener("click", function (e) {
+    const dropdown = document.getElementById("dropdown");
+    if (!e.target.closest("button") && !e.target.closest("#dropdown")) {
+      dropdown?.classList.add("hidden");
+    }
+  });
+
+  // Start the slider - original
+  startInterval();
+</script>
+
+<!-- Hero Slider Section -->
+<section class="bg-indigo-600 text-white text-center py-16">
+  <h2 class="text-4xl font-bold mb-4">Your Event, Perfectly Managed</h2>
+  <p class="text-lg mb-6">From weddings to conferences, we help you plan, budget, and deliver excellence.</p>
+  <a href="create-event.html" class="bg-white text-indigo-600 px-6 py-2 rounded font-medium hover:bg-gray-100">Create
+    Your Event</a>
+</section>
+
+<!-- Upcoming Events -->
+<section class="bg-gray-100 py-8">
+  <div class="container mx-auto px-4">
+    <h3 class="text-3xl font-bold mb-10 text-center text-gray-800">
+      Upcoming Events
+    </h3>
+
+    <div class="grid gap-8 md:grid-cols-3">
+      <div
+        class="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+        <div class="text-4xl mb-3">🎉</div>
+        <h4 class="text-xl font-semibold text-gray-800 mb-1">Music Fest 2025</h4>
+        <p class="text-indigo-600 font-medium mb-3">January 2025</p>
+        <p class="text-gray-600 text-sm">Join us for a day of live music and entertainment from top artists.</p>
+      </div>
+
+      <div
+        class="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+        <div class="text-4xl mb-3">🎓</div>
+        <h4 class="text-xl font-semibold text-gray-800 mb-1">Graduation Ceremony</h4>
+        <p class="text-indigo-600 font-medium mb-3">February 2025</p>
+        <p class="text-gray-600 text-sm">A special event to celebrate the achievements of our talented graduates.</p>
+      </div>
+
+      <div
+        class="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+        <div class="text-4xl mb-3">💍</div>
+        <h4 class="text-xl font-semibold text-gray-800 mb-1">Bridal Expo</h4>
+        <p class="text-indigo-600 font-medium mb-3">March 2025</p>
+        <p class="text-gray-600 text-sm">Find everything you need to plan your perfect wedding day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="relative w-full px-6">
+  <h2 class="text-3xl text-center font-bold mb-4">Top destinations</h2>
+  <div class="flex items-center relative">
+    <button id="scrollLeft" class="absolute left-0 bg-white p-3 rounded-full shadow-md z-10" disabled>
+      ◀
+    </button>
+    <div class="flex gap-6 overflow-hidden w-full px-16">
+      <div id="carousel" class="flex gap-6 transition-transform duration-500" style="transform: translateX(0)">
+        <div class="relative w-80 rounded-xl overflow-hidden shadow-lg flex-shrink-0 group">
+          <img src="assets/orlando.jpg" alt="Orlando" class="w-full h-56 object-cover" />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-red-300 h-1 transition-all duration-300 group-hover:h-12 group-hover:bg-gradient-to-t p-4">
+            <h2 class="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Orlando
+            </h2>
+          </div>
+        </div>
+        <div class="relative w-80 rounded-xl overflow-hidden shadow-lg flex-shrink-0 group">
+          <img src="assets/c (1).jpg" alt="Philadelphia" class="w-full h-56 object-cover" />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-red-300 h-1 transition-all duration-300 group-hover:h-12 group-hover:bg-gradient-to-t p-4">
+            <h2 class="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Philadelphia
+            </h2>
+          </div>
+        </div>
+        <div class="relative w-80 rounded-xl overflow-hidden shadow-lg flex-shrink-0 group">
+          <img src="assets/c (2).jpg" alt="San Diego" class="w-full h-56 object-cover" />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-red-300 h-1 transition-all duration-300 group-hover:h-12 group-hover:bg-gradient-to-t p-4">
+            <h2 class="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              San Diego
+            </h2>
+          </div>
+        </div>
+        <div class="relative w-80 rounded-xl overflow-hidden shadow-lg flex-shrink-0 group">
+          <img src="assets/c (3).jpg" alt="New York" class="w-full h-56 object-cover" />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-red-300 h-1 transition-all duration-300 group-hover:h-12 group-hover:bg-gradient-to-t p-4">
+            <h2 class="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              New York
+            </h2>
+          </div>
+        </div>
+        <div class="relative w-80 rounded-xl overflow-hidden shadow-lg flex-shrink-0 group">
+          <img src="assets/c (4).jpg" alt="Los Angeles" class="w-full h-56 object-cover" />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-red-300 h-1 transition-all duration-300 group-hover:h-12 group-hover:bg-gradient-to-t p-4">
+            <h2 class="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Los Angeles
+            </h2>
+          </div>
+        </div>
+        <div class="relative w-80 rounded-xl overflow-hidden shadow-lg flex-shrink-0 group">
+          <img src="assets/c (5).jpg" alt="Chicago" class="w-full h-56 object-cover" />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-red-300 h-1 transition-all duration-300 group-hover:h-12 group-hover:bg-gradient-to-t p-4">
+            <h2 class="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Chicago
+            </h2>
+          </div>
+        </div>
+        <div class="relative w-80 rounded-xl overflow-hidden shadow-lg flex-shrink-0 group">
+          <img src="assets/c (6).jpg" alt="Miami" class="w-full h-56 object-cover" />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-red-300 h-1 transition-all duration-300 group-hover:h-12 group-hover:bg-gradient-to-t p-4">
+            <h2 class="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Miami
+            </h2>
+          </div>
+        </div>
+        <div class="relative w-80 rounded-xl overflow-hidden shadow-lg flex-shrink-0 group">
+          <img src="assets/c (7).jpg" alt="Seattle" class="w-full h-56 object-cover" />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-red-300 h-1 transition-all duration-300 group-hover:h-12 group-hover:bg-gradient-to-t p-4">
+            <h2 class="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Seattle
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button id="scrollRight" class="absolute right-0 bg-white p-3 rounded-full shadow-md z-10">
+      ▶
+    </button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let index = 0;
+    const carousel = document.getElementById('carousel');
+    const scrollLeftBtn = document.getElementById('scrollLeft');
+    const scrollRightBtn = document.getElementById('scrollRight');
+
+    function updateButtons() {
+      scrollLeftBtn.disabled = index === 0;
+      scrollRightBtn.disabled = index + 4 >= 8; // 8 is the total number of destinations
+    }
+
+    scrollLeftBtn.addEventListener('click', () => {
+      if (index > 0) {
+        index -= 4;
+        carousel.style.transform = `translateX(-${index * 21}rem)`;
+        updateButtons();
+      }
+    });
+
+    scrollRightBtn.addEventListener('click', () => {
+      if (index + 4 < 8) {
+        index += 4;
+        carousel.style.transform = `translateX(-${index * 21}rem)`;
+        updateButtons();
+      }
+    });
+
+    // Initialize button states
+    updateButtons();
+  });
+</script>
+
+<!-- Why Choose Us -->
+<section class="container mx-auto px-4 py-12">
+  <h3 class="text-2xl font-semibold mb-6 text-center">Why Choose EveM?</h3>
+  <div class="grid md:grid-cols-3 gap-6 text-center">
+    <div class="bg-white p-6 rounded shadow hover:shadow-md">✅ Simple Event Tools</div>
+    <div class="bg-white p-6 rounded shadow hover:shadow-md">🤝 Vendor & Venue Access</div>
+    <div class="bg-white p-6 rounded shadow hover:shadow-md">📊 Budget Tracking</div>
+  </div>
+</section>
+
+<!-- Sponsors Section -->
+<section class="py-10 px-6 text-center bg-gray-50">
+  <h2 class="text-3xl font-bold mb-6">Our Sponsors</h2>
+  <div class="flex flex-wrap justify-center gap-6">
+    <!-- Sponsor 1 -->
+    <div class="w-64 p-4 bg-white shadow-md rounded-lg text-center">
+      <img src="assets/d (2).jpg" alt="Red Bull" class="w-24 h-24 mx-auto rounded-full object-cover" />
+      <h3 class="text-lg font-semibold mt-3">Red Bull</h3>
+    </div>
+
+    <!-- Sponsor 2 -->
+    <div class="w-64 p-4 bg-white shadow-md rounded-lg text-center">
+      <img src="assets/d (1).jpg" alt="Nike" class="w-24 h-24 mx-auto rounded-full object-cover" />
+      <h3 class="text-lg font-semibold mt-3">Nike</h3>
+    </div>
+
+    <!-- Sponsor 3 -->
+    <div class="w-64 p-4 bg-white shadow-md rounded-lg text-center">
+      <img src="assets/d (4).jpg" alt="Spotify" class="w-24 h-24 mx-auto rounded-full object-cover" />
+      <h3 class="text-lg font-semibold mt-3">Spotify</h3>
+    </div>
+
+    <!-- Sponsor 4 -->
+    <div class="w-64 p-4 bg-white shadow-md rounded-lg text-center">
+      <img src="assets/d (3).jpg" alt="Tesla" class="w-24 h-24 mx-auto rounded-full object-cover" />
+      <h3 class="text-lg font-semibold mt-3">Tesla</h3>
+    </div>
+  </div>
+</section>
+
+
+<!--News-->
+<section class="w-[98%] mx-auto py-10 bg-gray-100">
+  <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Blog & News</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Blog Post 1 -->
+    <article class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6">
+      <h3 class="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-300 mb-3">
+        <a href="/blog/top-10-tips-for-successful-event-planning">Top 10 Tips for Successful Event Planning</a>
+      </h3>
+      <p class="text-sm text-gray-500 mb-2">October 1, 2023</p>
+      <p class="text-gray-700 mb-4">Discover the essential tips to make your event a success.</p>
+      <a href="/blog/top-10-tips-for-successful-event-planning"
+        class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">Read More</a>
+    </article>
+
+    <!-- Blog Post 2 -->
+    <article class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6">
+      <h3 class="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-300 mb-3">
+        <a href="/blog/how-to-choose-the-perfect-venue">How to Choose the Perfect Venue for Your Event</a>
+      </h3>
+      <p class="text-sm text-gray-500 mb-2">September 25, 2023</p>
+      <p class="text-gray-700 mb-4">Learn how to select the best venue that fits your event needs.</p>
+      <a href="/blog/how-to-choose-the-perfect-venue"
+        class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">Read More</a>
+    </article>
+
+    <!-- Blog Post 3 -->
+    <article class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6">
+      <h3 class="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-300 mb-3">
+        <a href="/blog/latest-trends-in-corporate-event-management">The Latest Trends in Corporate Event Management</a>
+      </h3>
+      <p class="text-sm text-gray-500 mb-2">September 18, 2023</p>
+      <p class="text-gray-700 mb-4">Stay updated with the latest trends in corporate events.</p>
+      <a href="/blog/latest-trends-in-corporate-event-management"
+        class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">Read More</a>
+    </article>
+  </div>
+  <div class="text-center mt-12 bg-white p-6 rounded-2xl shadow-lg">
+    <p class="text-lg text-gray-700 mb-4">Enjoyed our articles? <a href="/subscribe"
+        class="text-blue-600 font-semibold hover:text-blue-800">Subscribe</a> to our blog for more updates!</p>
+    <div class="flex justify-center space-x-6 mt-4">
+      <a href="https://facebook.com" class="text-gray-600 hover:text-blue-600 transition-colors duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+        </svg>
+      </a>
+      <a href="https://twitter.com" class="text-gray-600 hover:text-blue-600 transition-colors duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path
+            d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+          </path>
+        </svg>
+      </a>
+      <a href="https://linkedin.com" class="text-gray-600 hover:text-blue-600 transition-colors duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+          <rect x="2" y="9" width="4" height="12"></rect>
+          <circle cx="4" cy="4" r="2"></circle>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-blue-500 text-white p-10">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div>
+      <h4 class="font-bold mb-2">Use EveM</h4>
+      <ul class="space-y-1">
+        <li><a href="/createevent" class="hover:underline">Create Events</a></li>
+        <li><a href="#" class="hover:underline">Pricing</a></li>
+        <li><a href="#" class="hover:underline">Event Marketing</a></li>
+        <li><a href="#" class="hover:underline">Mobile Ticket App</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-bold mb-2">Plan Events</h4>
+      <ul class="space-y-1">
+        <li><a href="#" class="hover:underline">Sell Tickets Online</a></li>
+        <li><a href="#" class="hover:underline">Event Planning</a></li>
+        <li><a href="#" class="hover:underline">Virtual Events</a></li>
+        <li><a href="#" class="hover:underline">QR Codes for Check-In</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-bold mb-2">Find Events</h4>
+      <ul class="space-y-1">
+        <li><a href="#" class="hover:underline">New York Events</a></li>
+        <li><a href="#" class="hover:underline">Chicago Events</a></li>
+        <li><a href="#" class="hover:underline">Los Angeles Events</a></li>
+        <li><a href="#" class="hover:underline">Washington Events</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-bold mb-2">Connect With Us</h4>
+      <ul class="flex space-x-4">
+        <li>
+          <a href="https://x.com/AsifJahan16?t=395gkNQRy6uxrRdKF3HqVQ&s=09" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
+              <path
+                d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z">
+              </path>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.facebook.com/aasif.jahan.9/" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
+              <path
+                d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z">
+              </path>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.instagram.com/__aasiif__/" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z">
+              </path>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/asif748?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+            target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
+              <path d="M16 3h-9v4h9zm0 5h-9v4h9zm0 5h-9v4h9zm0 5h-9v4h9z"></path>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="mt-8 text-center text-sm">
+    <script>
+      document.write(`© ${new Date().getFullYear()} EveM Events Ltd. All rights reserved.`);
+    </script>
+    <p>Bringing your events to life with seamless management</p>
+  </div>
+
+
+</footer>
+</body>
+</html>

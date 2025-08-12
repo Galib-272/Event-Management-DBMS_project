@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login | EveM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <div class="min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+      <h2 class="text-2xl font-bold mb-6 text-center text-red-600">Admin Login</h2>
+
+      <!-- ✅ Admin login form -->
+      <form id="adminLoginForm" class="space-y-4">
+        <input
+          type="text"
+          id="username"
+          placeholder="Username"
+          required
+          class="border border-gray-300 rounded w-full px-4 py-2"
+        />
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+          class="border border-gray-300 rounded w-full px-4 py-2"
+        />
+        <button
+          type="submit"
+          class="bg-red-600 text-white px-4 py-2 rounded w-full hover:bg-red-700"
+        >
+          Log In
+        </button>
+      </form>
+
+      <p class="text-sm mt-4 text-center text-gray-600">
+        Back to <a href="index.html" class="text-indigo-600 hover:underline">Home</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ✅ Script that handles admin login -->
+  <script>
+    document.getElementById("adminLoginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("http://localhost:3000/login-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem("admin", JSON.stringify(data)); // ✅ Save session
+        window.location.href = "index.html"; // ✅ Redirect to home
+      } else {
+        alert("Login failed. Invalid username or password.");
+      }
+    });
+  </script>
+
+</body>
+</html>

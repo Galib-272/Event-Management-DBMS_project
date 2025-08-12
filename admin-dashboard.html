@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard | EveM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /*simple hover effect for the event cards */
+    .event-card-hover:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .event-card-hover {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+ <script>
+  const admin = JSON.parse(localStorage.getItem("admin"));
+  if (!admin) {
+    alert("Unauthorized access.");
+    location.href = "login-admin.html";
+  }
+</script>
+
+<!-- Navbar -->
+<header class="bg-white shadow sticky top-0 z-50">
+  <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+
+    <!-- Logo + Title -->
+    <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-indigo-600">
+      <img src="assets/icon.png" alt="EveM Logo" class="h-8 w-8">
+      <span>EveM</span>
+    </a>
+
+    <!-- Navigation Links -->
+    <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
+      <a href="index.html" class="hover:text-indigo-600">Home</a>
+      <a href="create-event.html" class="hover:text-indigo-600">Event</a>
+      <a href="about.html" class="hover:text-indigo-600">About</a>
+    </nav>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const loginContainer = document.querySelector("#loginButton");
+        const admin = JSON.parse(localStorage.getItem("admin"));
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (admin && loginContainer) {
+          loginContainer.innerHTML = `
+        <div class="relative">
+          <button onclick="toggleDropdown()" class="bg-red-600 text-white px-4 py-2 rounded-full flex items-center space-x-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+            </svg>
+            <span>${admin.username}</span>
+          </button>
+          <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+            <a href="admin-dashboard.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Dashboard</a>
+            <a href="#" onclick="logoutAdmin()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>
+      `;
+        } else if (user && loginContainer) {
+          loginContainer.innerHTML = `
+        <div class="relative">
+          <button onclick="toggleDropdown()" class="bg-indigo-600 text-white px-4 py-2 rounded-full flex items-center space-x-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+            </svg>
+            <span>${user.first_name}</span>
+          </button>
+          <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+            <a href="user-dashboard.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Dashboard</a>
+            <a href="#" onclick="logoutUser()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>
+      `;
+        }
+      });
+
+      function logoutAdmin() {
+        localStorage.removeItem("admin");
+        location.href = "index.html";
+      }
+
+      function logoutUser() {
+        localStorage.removeItem("user");
+        location.href = "index.html";
+      }
+
+      function toggleDropdown() {
+        const menu = document.getElementById("dropdownMenu");
+        if (menu) menu.classList.toggle("hidden");
+      }
+
+      // Close on outside click
+      document.addEventListener("click", function (e) {
+        const dropdown = document.getElementById("dropdownMenu");
+        const button = e.target.closest("button");
+        if (dropdown && !dropdown.contains(e.target) && !button) {
+          dropdown.classList.add("hidden");
+        }
+      });
+    </script>
+    <!-- Search Box -->
+    <div class="relative hidden md:flex">
+      <input type="text" placeholder="Search "
+        class="border-2 border-indigo-500 rounded-full pl-10 pr-4 py-2 text-gray-700 w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+      <svg class="absolute left-3 top-3 text-gray-500 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+      </svg>
+    </div>
+
+    <!-- Login/Signup Dropdown -->
+    <div class="relative" id="loginButton">
+      <button onclick="toggleDropdown()"
+        class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 flex items-center space-x-2">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+        </svg>
+        <span>Log In / Sign Up</span>
+      </button>
+      <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
+        <a href="login-user.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Login</a>
+        <a href="login-admin.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Login</a>
+        <a href="signup.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+
+</header>
+
+<!-- Red Header -->
+<header class="bg-red-600 text-white px-6 py-4 flex justify-between items-center">
+  <h1 class="text-xl font-bold">Admin Dashboard</h1>
+  <a href="index.html" class="text-sm bg-white text-red-600 px-3 py-1 rounded">View Site</a>
+</header>
+
+<main class="container mx-auto p-6 space-y-8">
+  <section>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold text-red-700">Welcome, <span id="adminUsername">Admin</span>!</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500 flex items-center justify-between">
+        <div>
+          <p class="text-gray-500 text-sm">Total Events</p>
+          <p id="totalEvents" class="text-2xl font-bold text-gray-900">...</p>
+        </div>
+        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-indigo-500 flex items-center justify-between">
+        <div>
+          <p class="text-gray-500 text-sm">Registered Users</p>
+          <p id="totalUsers" class="text-2xl font-bold text-gray-900">...</p>
+        </div>
+        <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21v-1a4 4 0 00-4-4H9a4 4 0 00-4 4v1m0-10a4 4 0 110-5.292m2.414 1.414a4 4 0 115.656 5.656m-5.656-5.656l5.656 5.656"></path></svg>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500 flex items-center justify-between">
+        <div>
+          <p class="text-gray-500 text-sm">Total Payments</p>
+          <p id="totalPayments" class="text-2xl font-bold text-gray-900">...</p>
+        </div>
+        <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500 flex items-center justify-between">
+        <div>
+          <p class="text-gray-500 text-sm">Total Feedbacks</p>
+          <p id="totalFeedbacks" class="text-2xl font-bold text-gray-900">...</p>
+        </div>
+        <svg class="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-red-700 mb-4">Manage Events</h2>
+    <div id="eventListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <p class="text-center text-gray-500 col-span-full">Loading events...</p>
+    </div>
+  </section>
+
+  <section class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-red-700 mb-4">Manage Vendors</h2>
+    <form id="vendorForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 items-end">
+      <input type="hidden" id="vendorId">
+      <input type="text" id="firstName" placeholder="First Name" required class="border p-2 rounded">
+      <input type="text" id="lastName" placeholder="Last Name" required class="border p-2 rounded">
+      <input type="text" id="service" placeholder="Service" class="border p-2 rounded">
+      <input type="text" id="phone" placeholder="Phone" class="border p-2 rounded">
+      <input type="email" id="email" placeholder="Email" required class="border p-2 rounded">
+      <button type="submit" class="bg-red-600 text-white p-2 rounded hover:bg-red-700 transition">Save Vendor</button>
+    </form>
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-gray-100 text-gray-600">
+          <th class="p-3 border-b">Name</th>
+          <th class="p-3 border-b">Service</th>
+          <th class="p-3 border-b">Contact</th>
+          <th class="p-3 border-b">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="vendorTable">
+        <tr><td class="p-3 text-gray-500" colspan="4">Loading vendors...</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-red-700 mb-4">Manage Organizers</h2>
+    <form id="organizerForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 items-end">
+      <input type="hidden" id="organizerId">
+      <input type="text" id="orgFirstName" placeholder="First Name" required class="border p-2 rounded">
+      <input type="text" id="orgLastName" placeholder="Last Name" required class="border p-2 rounded">
+      <input type="text" id="company" placeholder="Company" class="border p-2 rounded">
+      <input type="text" id="orgPhone" placeholder="Phone" class="border p-2 rounded">
+      <input type="email" id="orgEmail" placeholder="Email" required class="border p-2 rounded">
+      <button type="submit" class="bg-red-600 text-white p-2 rounded hover:bg-red-700 transition">Save Organizer</button>
+    </form>
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-gray-100 text-gray-600">
+          <th class="p-3 border-b">Name</th>
+          <th class="p-3 border-b">Company</th>
+          <th class="p-3 border-b">Contact</th>
+          <th class="p-3 border-b">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="organizerTable">
+        <tr><td class="p-3 text-gray-500" colspan="4">Loading organizers...</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+<script>
+  // Function to load the summary data
+  async function loadSummaryData() {
+    try {
+      const response = await fetch('http://localhost:3000/admin/dashboard-summary');
+      if (!response.ok) throw new Error('Failed to fetch summary data.');
+      const data = await response.json();
+      document.getElementById('totalEvents').textContent = data.totalEvents;
+      document.getElementById('totalUsers').textContent = data.totalUsers;
+      document.getElementById('totalPayments').textContent = `$${data.totalPayments.toLocaleString()}`;
+      document.getElementById('totalFeedbacks').textContent = data.totalFeedbacks;
+    } catch (error) {
+      console.error('Error loading summary data:', error);
+      // Fallback to dummy data on error
+      document.getElementById('totalEvents').textContent = 'N/A';
+      document.getElementById('totalUsers').textContent = 'N/A';
+      document.getElementById('totalPayments').textContent = 'N/A';
+      document.getElementById('totalFeedbacks').textContent = 'N/A';
+    }
+  }
+
+  // Function to load and display all events
+  async function loadEvents() {
+    const container = document.getElementById('eventListContainer');
+    try {
+      const response = await fetch('http://localhost:3000/admin/events');
+      if (!response.ok) throw new Error('Failed to fetch events.');
+      const events = await response.json();
+
+      container.innerHTML = ''; // Clear loading message
+      if (events.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-500 col-span-full">No events have been created yet.</p>';
+        return;
+      }
+
+      events.forEach(event => {
+        const eventCard = document.createElement('div');
+        eventCard.className = 'event-card-hover bg-white p-6 rounded-lg shadow-md flex flex-col justify-between';
+        
+        let statusBadge;
+        let actionButton;
+
+        if (event.is_approved) {
+            statusBadge = `<span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Approved</span>`;
+            actionButton = `<button onclick="deleteEvent(${event.id})" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">Delete</button>`;
+        } else if (event.is_paid) {
+            statusBadge = `<span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Payment Received</span>`;
+            actionButton = `<button onclick="approveEvent(${event.id})" class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition">Approve</button>`;
+        } else {
+            statusBadge = `<span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Pending Payment</span>`;
+            actionButton = `<button onclick="deleteEvent(${event.id})" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">Delete</button>`;
+        }
+
+        eventCard.innerHTML = `
+          <div>
+            <h3 class="text-xl font-bold text-gray-900">${event.name}</h3>
+            <p class="text-sm text-gray-500 mt-1">Organizer: ${event.organizer_name}</p>
+            <p class="text-sm text-gray-500">Date: ${new Date(event.start_date).toLocaleDateString()}</p>
+            <p class="text-gray-700 mt-2">${event.description.substring(0, 100)}...</p>
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            ${statusBadge}
+            ${actionButton}
+          </div>
+        `;
+        container.appendChild(eventCard);
+      });
+    } catch (error) {
+      console.error("Error loading events:", error);
+      container.innerHTML = `<p class="text-center text-red-500 col-span-full">Error loading events. Please ensure the server is running.</p>`;
+    }
+  }
+
+  // Admin approval function
+  async function approveEvent(eventId) {
+    if (confirm("Are you sure you want to approve this event?")) {
+      try {
+        const response = await fetch(`http://localhost:3000/admin/events/approve/${eventId}`, {
+          method: 'PUT'
+        });
+        if (!response.ok) {
+          throw new Error('Failed to approve event.');
+        }
+        alert("Event approved successfully!");
+        loadEvents(); // Reload events to show the updated status
+      } catch (error) {
+        console.error('Approval failed:', error);
+        alert(`Approval failed: ${error.message}`);
+      }
+    }
+  }
+
+  // Admin delete function
+  async function deleteEvent(eventId) {
+    if (confirm("Are you sure you want to delete this event?")) {
+      try {
+        const response = await fetch(`http://localhost:3000/admin/events/${eventId}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) {
+          throw new Error('Failed to delete event.');
+        }
+        alert("Event deleted successfully!");
+        loadEvents(); // Reload events to show the updated list
+      } catch (error) {
+        console.error('Deletion failed:', error);
+        alert(`Deletion failed: ${error.message}`);
+      }
+    }
+  }
+
+  // Vendor Management Functions
+  const vendorForm = document.getElementById('vendorForm');
+  const vendorTable = document.getElementById('vendorTable');
+
+  async function fetchVendors() {
+    try {
+      const res = await fetch('http://localhost:3000/admin/vendors');
+      if (!res.ok) throw new Error('Failed to fetch vendors.');
+      const vendors = await res.json();
+      vendorTable.innerHTML = vendors.map(v => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="p-3">${v.first_name} ${v.last_name}</td>
+          <td class="p-3">${v.service || ''}</td>
+          <td class="p-3">${v.phone || ''} / ${v.email}</td>
+          <td class="p-3">
+            <button onclick="editVendor(${v.id}, '${v.first_name}', '${v.last_name}', '${v.service || ''}', '${v.phone || ''}', '${v.email}')" class="bg-yellow-400 text-gray-800 px-2 py-1 rounded text-sm hover:bg-yellow-500 transition">Edit</button>
+            <button onclick="deleteVendor(${v.id})" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600 transition">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    } catch (error) {
+      console.error('Error fetching vendors:', error);
+      vendorTable.innerHTML = `<tr><td class="p-3 text-red-500" colspan="4">Error loading vendors.</td></tr>`;
+    }
+  }
+
+  vendorForm.onsubmit = async e => {
+    e.preventDefault();
+    const id = document.getElementById('vendorId').value;
+    const vendor = {
+      first_name: document.getElementById('firstName').value.trim(),
+      last_name: document.getElementById('lastName').value.trim(),
+      service: document.getElementById('service').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      email: document.getElementById('email').value.trim()
+    };
+
+    const method = id ? 'PUT' : 'POST';
+    const url = id ? `http://localhost:3000/admin/vendors/${id}` : 'http://localhost:3000/admin/vendors';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(vendor)
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(err);
+      }
+      alert(id ? "✅ Vendor updated!" : "✅ Vendor added!");
+      vendorForm.reset();
+      document.getElementById('vendorId').value = '';
+      fetchVendors();
+    } catch (error) {
+      alert("❌ Error: " + error.message);
+    }
+  };
+
+  function editVendor(id, first, last, service, phone, email) {
+    document.getElementById('vendorId').value = id;
+    document.getElementById('firstName').value = first;
+    document.getElementById('lastName').value = last;
+    document.getElementById('service').value = service;
+    document.getElementById('phone').value = phone;
+    document.getElementById('email').value = email;
+    // Scroll to the form
+    vendorForm.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function deleteVendor(id) {
+    if (confirm("Are you sure you want to delete this vendor?")) {
+      try {
+        const response = await fetch(`http://localhost:3000/admin/vendors/${id}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Deletion failed.');
+        alert("✅ Vendor deleted!");
+        fetchVendors();
+      } catch (error) {
+        alert("❌ Error: " + error.message);
+      }
+    }
+  }
+
+  // Organizer Management Functions
+  const orgForm = document.getElementById('organizerForm');
+  const organizerTable = document.getElementById('organizerTable');
+
+  async function fetchOrganizers() {
+    try {
+      const res = await fetch('http://localhost:3000/admin/organizers');
+      if (!res.ok) throw new Error('Failed to fetch organizers.');
+      const organizers = await res.json();
+      organizerTable.innerHTML = organizers.map(o => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="p-3">${o.first_name} ${o.last_name}</td>
+          <td class="p-3">${o.company || ''}</td>
+          <td class="p-3">${o.phone || ''} / ${o.email}</td>
+          <td class="p-3">
+            <button onclick="editOrganizer(${o.id}, '${o.first_name}', '${o.last_name}', '${o.company || ''}', '${o.phone || ''}', '${o.email}')" class="bg-yellow-400 text-gray-800 px-2 py-1 rounded text-sm hover:bg-yellow-500 transition">Edit</button>
+            <button onclick="deleteOrganizer(${o.id})" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600 transition">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    } catch (error) {
+      console.error('Error fetching organizers:', error);
+      organizerTable.innerHTML = `<tr><td class="p-3 text-red-500" colspan="4">Error loading organizers.</td></tr>`;
+    }
+  }
+
+  orgForm.onsubmit = async e => {
+    e.preventDefault();
+    const id = document.getElementById('organizerId').value;
+    const organizer = {
+      first_name: document.getElementById('orgFirstName').value.trim(),
+      last_name: document.getElementById('orgLastName').value.trim(),
+      company: document.getElementById('company').value.trim(),
+      phone: document.getElementById('orgPhone').value.trim(),
+      email: document.getElementById('orgEmail').value.trim()
+    };
+
+    const method = id ? 'PUT' : 'POST';
+    const url = id ? `http://localhost:3000/admin/organizers/${id}` : 'http://localhost:3000/admin/organizers';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(organizer)
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(err);
+      }
+      alert(id ? "✅ Organizer updated!" : "✅ Organizer added!");
+      orgForm.reset();
+      document.getElementById('organizerId').value = '';
+      fetchOrganizers();
+    } catch (error) {
+      alert("❌ Error: " + error.message);
+    }
+  };
+
+  function editOrganizer(id, first, last, company, phone, email) {
+    document.getElementById('organizerId').value = id;
+    document.getElementById('orgFirstName').value = first;
+    document.getElementById('orgLastName').value = last;
+    document.getElementById('company').value = company;
+    document.getElementById('orgPhone').value = phone;
+    document.getElementById('orgEmail').value = email;
+    // Scroll to the form
+    orgForm.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function deleteOrganizer(id) {
+    if (confirm("Are you sure you want to delete this organizer?")) {
+      try {
+        const response = await fetch(`http://localhost:3000/admin/organizers/${id}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Deletion failed.');
+        alert("✅ Organizer deleted!");
+        fetchOrganizers();
+      } catch (error) {
+        alert("❌ Error: " + error.message);
+      }
+    }
+  }
+
+  // Initialize all data on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    const admin = JSON.parse(localStorage.getItem('admin'));
+    if (admin) {
+        document.getElementById('adminUsername').textContent = admin.username;
+        loadSummaryData();
+        loadEvents();
+        fetchVendors();
+        fetchOrganizers();
+    }
+  });
+</script>
+</body>
+</html>
